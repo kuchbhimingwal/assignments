@@ -4,7 +4,6 @@ const app = express();
 const adminRouter = require("./routes/admin")
 const userRouter = require("./routes/user");
 
-const JWT_KEY = "abcd"
 
 // Middleware for parsing request bodies
 app.use(bodyParser.json());
@@ -15,5 +14,3 @@ const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
-
-module.exports = JWT_KEY;

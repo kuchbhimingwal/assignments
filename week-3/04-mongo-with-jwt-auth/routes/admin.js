@@ -1,9 +1,9 @@
 const { Router } = require("express");
 const adminMiddleware = require("../middleware/admin");
-const { Admin, Course } = require("../db")
+const { Admin, Course, User } = require("../db")
 const router = Router();
 const jwt = require('jsonwebtoken');
-const jwtKey = require("../index")
+const jwtKey = require("../config")
 
 // Admin Routes
 router.post('/signup', (req, res) => {
@@ -20,14 +20,23 @@ router.post('/signup', (req, res) => {
     res.json({message: 'Admin created successfully'})
 });
 
-router.post('/signin', (req, res) => {
+router.post('/signin', async (req, res) => {
     // Implement admin signup logic
     const username = req.body.username;
     const password = req.body.password;
 
-    const token = jwt.sign({username: username}, jwtKey);
+    const user = await Admin.find({
+        username,
+        password
+    })
+    console.log(user);
+    if(user){
+        const token = jwt.sign({username}, jwtKey);
+        res.json({token: token})
+    } else {
+        res.status(411).json({message :"user not found"});
+    }
 
-    res.json({token: token})
 });
 
 router.post('/courses', adminMiddleware, (req, res) => {

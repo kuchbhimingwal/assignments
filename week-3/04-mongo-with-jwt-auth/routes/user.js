@@ -3,7 +3,7 @@ const router = Router();
 const { User, Course } = require('../db')
 const userMiddleware = require("../middleware/user");
 const jwt = require('jsonwebtoken');
-const jwtKey = require("../index")
+const jwtKey = require("../config")
 
 // User Routes
 router.post('/signup', (req, res) => {
@@ -21,14 +21,21 @@ router.post('/signup', (req, res) => {
     })
 });
 
-router.post('/signin', (req, res) => {
+router.post('/signin', async (req, res) => {
     // Implement admin signup logic
     const username = req.body.username;
     const password = req.body.password;
 
-    const token = jwt.sign({username: username}, jwtKey);
-
-    res.json({token: token})
+    const user = await User.find({
+        username,
+        password
+    })
+    if(user){
+        const token = jwt.sign({username: username}, jwtKey);
+        res.json({token: token})
+    } else {
+        res.status(411).json({message :"user not found"});
+    }
 });
 
 router.get('/courses', (req, res) => {
