@@ -52,6 +52,12 @@ router.post('/courses', adminMiddleware, (req, res) => {
 
 router.get('/courses', adminMiddleware, (req, res) => {
     // Implement fetching all courses logic
+    Course.find({})
+    .then((response)=>{
+        res.json({
+            Courses : response
+        })
+    })
 });
 
 module.exports = router;
